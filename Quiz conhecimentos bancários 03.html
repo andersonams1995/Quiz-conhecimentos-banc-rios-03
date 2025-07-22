@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz de Conhecimentos Bancários</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e6f0fa;
+      color: #003366;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #002244;
+    }
+    .question {
+      background: #ffffff;
+      border: 1px solid #a3c2f2;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+    }
+    .question h3 {
+      margin-top: 0;
+    }
+    .options label {
+      display: block;
+      margin: 5px 0;
+      cursor: pointer;
+    }
+    .correct {
+      color: green;
+      font-weight: bold;
+    }
+    .incorrect {
+      color: red;
+      font-weight: bold;
+    }
+    #score {
+      font-size: 18px;
+      text-align: center;
+      margin-top: 30px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quiz - Conhecimentos Bancários</h1>
+
+  <div id="quiz"></div>
+  <div id="score"></div>
+
+  <script>
+    const questions = [
+      {
+        q: "Os depósitos a prazo podem ser captados com ou sem a emissão de certificados. Aqueles captados por meio da emissão de recibos não são passíveis de negociação em mercado secundário, ainda que possam ser resgatados antecipadamente pelo emissor.",
+        options: ["C) Certo", "E) Errado"],
+        answer: 0
+      },
+      {
+        q: "Apesar de as demais associações de poupança e empréstimo terem, formalmente, atuação apenas regional, a Associação de Poupança e Empréstimo (POUPEX) tem a peculiaridade de atuar em âmbito nacional.",
+        options: ["C) Certo", "E) Errado"],
+        answer: 0
+      },
+      {
+        q: "Uma das funções do Banco do Brasil é ser depositário das disponibilidades de caixa da União, na chamada Conta Única do Tesouro Nacional.",
+        options: ["C) Certo", "E) Errado"],
+        answer: 1
+      },
+      {
+        q: "Quando a atuação do BNDES se dá por meio de Recursos Não Reembolsáveis, ela ocorre mediante a:",
+        options: [
+          "A) concessão de financiamento, limites de crédito, empréstimos e debêntures simples não conversíveis",
+          "B) gestão de recursos de terceiros",
+          "C) provisão de fianças diretas e indiretas",
+          "D) realização de investimentos diretos e de operações de mercado de capitais",
+          "E) estruturação de projetos e a coordenação de ofertas públicas de distribuição de títulos"
+        ],
+        answer: 1
+      },
+      {
+        q: "De acordo com a regulamentação em vigor, há duas espécies de fintechs de crédito: as sociedades de crédito direto, que não assumem o risco de crédito das operações contratadas; e as sociedades de empréstimo entre pessoas, que assumem o risco de crédito das operações.",
+        options: ["C) Certo", "E) Errado"],
+        answer: 1
+      },
+      {
+        q: "Tanto bancos de investimento quanto bancos de desenvolvimento podem prover recursos para o financiamento de atividades do setor privado, mas os bancos de desenvolvimento devem visar ao desenvolvimento econômico e social da região em que atuem.",
+        options: ["C) Certo", "E) Errado"],
+        answer: 0
+      },
+      {
+        q: "Através do Open Finance, o cliente pode:",
+        options: [
+          "A) comparar serviços e tarifas entre instituições financeiras.",
+          "B) analisar os produtos e serviços contratados pelos demais clientes.",
+          "C) acompanhar as transações financeiras de familiares e amigos, desde que sejam autorizadas pelos envolvidos.",
+          "D) realizar transações com instituições financeiras além daquelas autorizadas pelo Banco Central do Brasil.",
+          "E) contratar produtos e serviços de instituições que não estão sujeitas à regulação do Banco Central do Brasil."
+        ],
+        answer: 0
+      },
+      {
+        q: "A melhor solução para mitigar o risco de variação da taxa de juros consiste em zerar o hiato de:",
+        options: [
+          "A) vencimentos de ativos e passivos.",
+          "B) ativos.",
+          "C) taxas de juros.",
+          "D) passivos e ativos.",
+          "E) durations."
+        ],
+        answer: 4
+      },
+      {
+        q: "Assinale a alternativa que apresenta uma operação especial realizada por bancos comerciais:",
+        options: [
+          "A) Desconto de títulos",
+          "B) Depósito à vista",
+          "C) Custódia de Títulos e Valores",
+          "D) Depósitos interfinanceiros"
+        ],
+        answer: 2
+      },
+      {
+        q: "O que representa o valor nominal de uma ação?",
+        options: [
+          "A) O valor presente de um fluxo de caixa esperado.",
+          "B) O valor de negociação na bolsa.",
+          "C) O valor atribuído a uma ação no estatuto social da companhia.",
+          "D) O preço definido no lançamento das ações em operações de abertura de capital.",
+          "E) A parcela do capital próprio da sociedade que compete a cada ação amortizada."
+        ],
+        answer: 2
+      }
+    ];
+
+    let score = 0;
+
+    function createQuiz() {
+      const quiz = document.getElementById("quiz");
+      questions.forEach((q, i) => {
+        const div = document.createElement("div");
+        div.className = "question";
+
+        const title = document.createElement("h3");
+        title.innerText = `Questão ${i + 1}: ${q.q}`;
+        div.appendChild(title);
+
+        const opts = document.createElement("div");
+        opts.className = "options";
+
+        q.options.forEach((opt, j) => {
+          const label = document.createElement("label");
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = "q" + i;
+          input.onclick = () => handleAnswer(i, j, label);
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(" " + opt));
+          opts.appendChild(label);
+        });
+
+        div.appendChild(opts);
+        quiz.appendChild(div);
+      });
+    }
+
+    function handleAnswer(qIndex, selectedIndex, label) {
+      const correct = questions[qIndex].answer;
+      const labels = document.getElementsByName("q" + qIndex);
+
+      labels.forEach((input, idx) => {
+        input.disabled = true;
+        const parent = input.parentElement;
+        if (idx === correct) {
+          parent.classList.add("correct");
+        }
+        if (idx === selectedIndex && idx !== correct) {
+          parent.classList.add("incorrect");
+        }
+      });
+
+      if (selectedIndex === correct) {
+        score++;
+      }
+
+      document.getElementById("score").innerText = `Pontuação: ${score} de ${questions.length}`;
+    }
+
+    createQuiz();
+  </script>
+</body>
+</html>
